@@ -36,7 +36,7 @@ SECRET_KEY = 'django-insecure-^u+qa)fh2%d-(r&41%50n&d19*6)#(yoovtur8s=)be-mw(66b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['8000-leverh-drfapi-d4r1luu6r0f.ws-eu104.gitpod.io']
 
 
 # Application definition
@@ -50,6 +50,9 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
+
+    'profiles',
+    'Bookhub',
 
 ]
 
