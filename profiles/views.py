@@ -5,12 +5,13 @@ from rest_framework.response import Response
 from .models import Profile
 from .serializers import ProfileSerializer
 from bookhub.permissions import IsOwnerOrReadOnly
+from django.http import Http404
 
 
 # Create your views here.
 
 class ProfileList(APIView):
-
+    
     def get(self, request):
         profiles = Profile.objects.all()
         serializer = ProfileSerializer(
