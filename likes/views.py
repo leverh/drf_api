@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from bookhub_api.permissions import IsOwnerOrReadOnly
+from bookhub.permissions import IsOwnerOrReadOnly
 from .models import Like
 from .serializers import LikeSerializer
 
