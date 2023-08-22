@@ -7,6 +7,7 @@ from django.http import Http404
 from bookhub.permissions import IsOwnerOrReadOnly
 from rest_framework import generics
 from django.db.models import Count
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
 
