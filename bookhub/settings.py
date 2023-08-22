@@ -54,7 +54,8 @@ INSTALLED_APPS = [
 
     'profiles',
     'bookhub',
-    'posts'
+    'posts',
+    'comments',
 ]
 
 MIDDLEWARE = [
