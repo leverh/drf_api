@@ -39,7 +39,7 @@ DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = ['localhost',
                  '8000-leverh-drfapi-d4r1luu6r0f.ws-eu104.gitpod.io',
-                 'bookhub-rdf-api-9aad7672239c.herokuapp.com',
+                 os.environ.get('ALLOWED_HOST'),
                  ]
 
 
