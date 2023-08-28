@@ -39,7 +39,7 @@ DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = ['localhost', 
                  '8000-leverh-drfapi-d4r1luu6r0f.ws-eu104.gitpod.io',
-                 'bookhub.herokuapp.com'
+                 'https://bookhub-rdf-api-9aad7672239c.herokuapp.com/'
                  ]
 
 
@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'dj_rest_auth.registration',
     'corsheaders',
-
     'profiles',
     'bookhub',
     'posts',
