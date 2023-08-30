@@ -28,10 +28,13 @@ class PostList(generics.ListCreateAPIView):
         'owner__followed__owner__profile',
         'likes__owner__profile',
         'owner__profile',
+        'author_name',
+        'isbn',
     ]
     search_fields = [
         'owner__username',
         'title',
+        'author_name',
     ]
     ordering_fields = [
         'likes_count',
