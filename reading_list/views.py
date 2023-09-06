@@ -29,10 +29,16 @@ def get_user_reading_list(request):
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
-def add_book_to_reading_list(request, book_id):
+def add_book_to_reading_list(request, book_id, user_id):
+    # Check if the currently authenticated user is the owner of the list.
+    if request.user.id != user_id:
+        return Response({"error": "You don't have permission to add books to this list."}, status=403)
+
     book = get_object_or_404(Book, id=book_id)
     UserBook.objects.create(user=request.user, book=book)
     return Response({"message": "Book added to reading list!"})
+
+
 
 
 @api_view(['DELETE'])
