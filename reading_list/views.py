@@ -20,7 +20,6 @@ class BookListCreateView(generics.ListCreateAPIView):
         # Return the books associated with the user
         return Book.objects.filter(id__in=book_ids)
 
-    queryset = Book.objects.all()
     serializer_class = BookSerializer
 
 
