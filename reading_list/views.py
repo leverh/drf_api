@@ -14,17 +14,19 @@ class BookListCreateView(generics.ListCreateAPIView):
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def get_user_reading_list(request):
-    # Fetch the UserBook objects for the logged-in user
-    user_books = UserBook.objects.filter(user=request.user)
+def get_user_reading_list(request, user_id=None):
+    # If no user_id is provided in the URL, default to the authenticated user.
+    target_user = User.objects.get(id=user_id) if user_id else request.user
+    
+    user_books = UserBook.objects.filter(user=target_user).select_related('book')
+    books = [ub.book for ub in user_books]
 
-    # Extract the associated Book objects
-    books = [user_book.book for user_book in user_books]
+    is_owner = target_user == request.user
+    serialized_books = BookSerializer(books, many=True).data
 
-    # Serialize the books
-    serialized_books = BookSerializer(books, many=True)
+    # Include the is_owner field in the response
+    return Response({"results": serialized_books, "is_owner": is_owner})
 
-    return Response(serialized_books.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

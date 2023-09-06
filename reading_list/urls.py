@@ -6,4 +6,6 @@ urlpatterns = [
     path('users/<int:user_id>/books/<int:book_id>/add/', add_book_to_reading_list, name='add-book-to-list'),
     path('books/<int:book_id>/remove/', remove_book_from_reading_list, name='remove-book-from-list'),
     path('reading-list/', get_user_reading_list, name='user-reading-list'),
+    path('users/<int:user_id>/books/', get_user_reading_list, name='other-user-reading-list'),
+
 ]
