@@ -36,8 +36,12 @@ def add_book_to_reading_list(request, book_id):
 
 
 @api_view(['DELETE'])
-@permission_classes([permissions.IsAuthenticated])
 def remove_book_from_reading_list(request, book_id):
     book = get_object_or_404(Book, id=book_id)
-    UserBook.objects.filter(user=request.user, book=book).delete()
+    user_book = UserBook.objects.filter(user=request.user, book=book)
+
+    if not user_book.exists():
+        return Response({"error": "You don't have permission to remove this book."}, status=403)
+
+    user_book.delete()
     return Response({"message": "Book removed from reading list!"})
