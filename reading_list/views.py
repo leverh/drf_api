@@ -8,17 +8,16 @@ from django.shortcuts import get_object_or_404
 
 class BookListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
-        # Get the logged in user
         user = self.request.user
-        
-        # Fetch the UserBook objects associated with the user
+        print(f"User ID: {user.id}")
+
         user_books = UserBook.objects.filter(user=user)
-        
-        # Extract the book IDs from the UserBook objects
+        print(f"UserBooks: {user_books}")
+
         book_ids = [user_book.book.id for user_book in user_books]
-        
-        # Return the books associated with the user
-        return Book.objects.filter(id__in=book_ids)
+        print(f"Book IDs: {book_ids}")
+
+    return Book.objects.filter(id__in=book_ids)
 
     serializer_class = BookSerializer
 
