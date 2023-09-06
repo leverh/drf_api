@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 
 
 class BookListCreateView(generics.ListCreateAPIView):
+    serializer_class = BookSerializer
+
     def get_queryset(self):
         user = self.request.user
         print(f"User ID: {user.id}")
@@ -17,9 +19,8 @@ class BookListCreateView(generics.ListCreateAPIView):
         book_ids = [user_book.book.id for user_book in user_books]
         print(f"Book IDs: {book_ids}")
 
-    return Book.objects.filter(id__in=book_ids)
+        return Book.objects.filter(id__in=book_ids)
 
-    serializer_class = BookSerializer
 
 
 @api_view(['POST'])
