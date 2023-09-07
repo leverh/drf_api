@@ -15,6 +15,18 @@ class BookListCreateView(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'author']
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        title = self.request.query_params.get('title', None)
+        author = self.request.query_params.get('author', None)
+        if title:
+            queryset = queryset.filter(title=title)
+        if author:
+            queryset = queryset.filter(author=author)
+        
+        print("Received request:", self.request.GET)
+        return queryset
+
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
@@ -32,7 +44,6 @@ def get_user_reading_list(request, user_id=None):
     return Response({"results": serialized_books, "is_owner": is_owner})
 
 
-
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def add_book_to_reading_list(request, book_id, user_id):
@@ -43,8 +54,6 @@ def add_book_to_reading_list(request, book_id, user_id):
     book = get_object_or_404(Book, id=book_id)
     UserBook.objects.create(user=request.user, book=book)
     return Response({"message": "Book added to reading list!"})
-
-
 
 
 @api_view(['DELETE'])
