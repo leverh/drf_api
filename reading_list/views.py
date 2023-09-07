@@ -4,12 +4,16 @@ from .serializers import BookSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from rest_framework import filters
 
 
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Only authenticated users can create books
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'author']
 
 
 @api_view(['GET'])
