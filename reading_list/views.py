@@ -4,77 +4,51 @@ from .serializers import BookSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
-from rest_framework import filters
 
 
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'author']
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        title = self.request.query_params.get('title', None)
-        author = self.request.query_params.get('author', None)
-        
-        print("Received title:", title)
-        print("Received author:", author)
-        
-        if title:
-            queryset = queryset.filter(title=title)
-        if author:
-            queryset = queryset.filter(author=author)
-        
-        return queryset
+    permission_classes = [permissions.IsAuthenticated]  # Only authenticated users can create books
 
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def get_user_reading_list(request, user_id=None):
-    # Print statements to check the flow
-    print("Inside get_user_reading_list")
-    
-    # If no user_id is provided in the URL, default to the authenticated user.
-    target_user = User.objects.get(id=user_id) if user_id else request.user
-    print(f"Target user: {target_user}")
-    
-    user_books = UserBook.objects.filter(user=target_user).select_related('book')
+def get_reading_list(request):
+    user_books = UserBook.objects.filter(user=request.user).select_related('book')
     books = [ub.book for ub in user_books]
-    print(f"Books found: {books}")
 
-    is_owner = target_user == request.user
     serialized_books = BookSerializer(books, many=True).data
 
     # Include the is_owner field in the response
-    return Response({"results": serialized_books, "is_owner": is_owner})
+    return Response({"results": serialized_books, "is_owner": True})
 
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticatedOrReadOnly])
+def get_other_user_reading_list(request, user_id):
+    target_user = User.objects.get(id=user_id)
+    
+    user_books = UserBook.objects.filter(user=target_user).select_related('book')
+    books = [ub.book for ub in user_books]
 
+    serialized_books = BookSerializer(books, many=True).data
+
+    # Include the is_owner field in the response
+    return Response({"results": serialized_books, "is_owner": False})
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
-def add_book_to_reading_list(request, user_id):
+def add_book_to_reading_list(request, book_id, user_id):
     # Check if the currently authenticated user is the owner of the list.
     if request.user.id != user_id:
         return Response({"error": "You don't have permission to add books to this list."}, status=403)
 
-    title = request.data.get('title')
-    author = request.data.get('author')
-
-    # Check if the book already exists in the 'Books' table
-    book, created = Book.objects.get_or_create(title=title, author=author)
-
-    # Check if the book is already in the user's reading list
-    if UserBook.objects.filter(user=request.user, book=book).exists():
-        return Response({"message": "Book is already in your reading list!"}, status=400)
-
+    book = get_object_or_404(Book, id=book_id)
     UserBook.objects.create(user=request.user, book=book)
     return Response({"message": "Book added to reading list!"})
 
-
 @api_view(['DELETE'])
+@permission_classes([permissions.IsAuthenticated])
 def remove_book_from_reading_list(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     user_book = UserBook.objects.filter(user=request.user, book=book)

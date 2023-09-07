@@ -29,6 +29,6 @@ urlpatterns = [
     path('', include('comments.urls')),
     path('', include('likes.urls')),
     path('', include('followers.urls')),
-    path('reading-list/', include('reading_list.urls')),
+    path('', include('reading_list.urls')),
     path('', root_route),
 ]
