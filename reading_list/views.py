@@ -19,12 +19,15 @@ class BookListCreateView(generics.ListCreateAPIView):
         queryset = super().get_queryset()
         title = self.request.query_params.get('title', None)
         author = self.request.query_params.get('author', None)
+        
+        print("Received title:", title)
+        print("Received author:", author)
+        
         if title:
             queryset = queryset.filter(title=title)
         if author:
             queryset = queryset.filter(author=author)
         
-        print("Received request:", self.request.GET)
         return queryset
 
 
