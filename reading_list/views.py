@@ -34,17 +34,23 @@ class BookListCreateView(generics.ListCreateAPIView):
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def get_user_reading_list(request, user_id=None):
+    # Print statements to check the flow
+    print("Inside get_user_reading_list")
+    
     # If no user_id is provided in the URL, default to the authenticated user.
     target_user = User.objects.get(id=user_id) if user_id else request.user
+    print(f"Target user: {target_user}")
     
     user_books = UserBook.objects.filter(user=target_user).select_related('book')
     books = [ub.book for ub in user_books]
+    print(f"Books found: {books}")
 
     is_owner = target_user == request.user
     serialized_books = BookSerializer(books, many=True).data
 
     # Include the is_owner field in the response
     return Response({"results": serialized_books, "is_owner": is_owner})
+
 
 
 @api_view(['POST'])
