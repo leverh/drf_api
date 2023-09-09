@@ -62,9 +62,7 @@ class BookOfTheWeekView(APIView):
     def get(self, request):
         one_week_ago = timezone.now() - timedelta(days=7)
         recent_posts = Post.objects.filter(created_at__gte=one_week_ago)
-        
         top_post = max(recent_posts, key=lambda post: post.likes_count + post.comments_count, default=None)
-        
         if top_post:
             response_data = {
                 'title': top_post.title,
