@@ -12,6 +12,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models.functions import Rand
 
+
 # Create your views here.
 
 
@@ -59,26 +60,39 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class BookOfTheWeekView(APIView):
-
     def get(self, request):
-        one_week_ago = timezone.now() - timedelta(days=7)
-        recent_post = Post.objects.filter(created_at__gte=one_week_ago).order_by('-created_at').first()
+        random_post = Post.objects.annotate(random_order=Rand()).order_by('random_order').first()
 
-        if recent_post:
+        if random_post:
             response_data = {
-                'title': recent_post.title,
-                'author_name': recent_post.author_name
+                'title': random_post.title,
+                'author_name': random_post.author_name
             }
             return Response(response_data, status=status.HTTP_200_OK)
         else:
-            # If no recent post, try to get a random book from the entire database
-            all_posts = Post.objects.all()
-            if all_posts.exists():
-                random_post = random.choice(all_posts)
-                response_data = {
-                    'title': random_post.title,
-                    'author_name': random_post.author_name
-                }
-                return Response(response_data, status=status.HTTP_200_OK)
-            else:
-                return Response({"detail": "No posts found in the database."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "No posts found."}, status=status.HTTP_404_NOT_FOUND)
+
+# class BookOfTheWeekView(APIView):
+
+#     def get(self, request):
+#         one_week_ago = timezone.now() - timedelta(days=7)
+#         recent_post = Post.objects.filter(created_at__gte=one_week_ago).order_by('-created_at').first()
+
+#         if recent_post:
+#             response_data = {
+#                 'title': recent_post.title,
+#                 'author_name': recent_post.author_name
+#             }
+#             return Response(response_data, status=status.HTTP_200_OK)
+#         else:
+#             # If no recent post, try to get a random book from the entire database
+#             all_posts = Post.objects.all()
+#             if all_posts.exists():
+#                 random_post = random.choice(all_posts)
+#                 response_data = {
+#                     'title': random_post.title,
+#                     'author_name': random_post.author_name
+#                 }
+#                 return Response(response_data, status=status.HTTP_200_OK)
+#             else:
+#                 return Response({"detail": "No posts found in the database."}, status=status.HTTP_404_NOT_FOUND)
