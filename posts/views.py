@@ -70,4 +70,14 @@ class BookOfTheWeekView(APIView):
             }
             return Response(response_data, status=status.HTTP_200_OK)
         else:
-            return Response({"detail": "No posts found in the past week."}, status=status.HTTP_404_NOT_FOUND)
+            # If no recent post, try to get a random book from the entire database
+            all_posts = Post.objects.all()
+            if all_posts.exists():
+                random_post = random.choice(all_posts)
+                response_data = {
+                    'title': random_post.title,
+                    'author_name': random_post.author_name
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
+            else:
+                return Response({"detail": "No posts found in the database."}, status=status.HTTP_404_NOT_FOUND)
