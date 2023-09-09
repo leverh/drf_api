@@ -10,6 +10,7 @@ from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models.functions import Rand
 
 # Create your views here.
 
