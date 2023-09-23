@@ -40,6 +40,7 @@ DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = ['localhost',
                  '8000-leverh-drfapi-d4r1luu6r0f.ws-eu104.gitpod.io',
+                 'bookhub-react-app-e2e5d4f08f69.herokuapp.com',
                  os.environ.get('ALLOWED_HOST'),
                  ]
 
@@ -122,6 +123,7 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     extracted_url = re.match(r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
+        r"^https://bookhub-react-app-e2e5d4f08f69\.herokuapp\.com$",
     ]
 
 CORS_ALLOW_CREDENTIALS = True
