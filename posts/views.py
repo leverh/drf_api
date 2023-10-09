@@ -82,4 +82,7 @@ class BookOfTheWeekView(APIView):
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
             else:
-                return Response({"detail": "No posts found in the database."}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {"detail": "No posts found in the database."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
