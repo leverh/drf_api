@@ -63,7 +63,9 @@ class BookOfTheWeekView(APIView):
 
     def get(self, request):
         one_week_ago = timezone.now() - timedelta(days=7)
-        recent_post = Post.objects.filter(created_at__gte=one_week_ago).order_by('-created_at').first()
+        recent_post = Post.objects.filter(
+            created_at__gte=one_week_ago
+        ).order_by('-created_at').first()
 
         if recent_post:
             response_data = {
@@ -72,7 +74,8 @@ class BookOfTheWeekView(APIView):
             }
             return Response(response_data, status=status.HTTP_200_OK)
         else:
-            # If no recent post, try to get a random book from the entire database
+            # If no recent post, try to get a random book
+            # from the entire database
             all_posts = Post.objects.all()
             if all_posts.exists():
                 random_post = random.choice(all_posts)

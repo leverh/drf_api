@@ -38,7 +38,7 @@ class Post(models.Model):
         ('valencia', 'Valencia'),
         ('walden', 'Walden'),
         ('xpro2', 'X-pro II')
-]
+    ]
 
     class Meta:
         ordering = ['-created_at']
